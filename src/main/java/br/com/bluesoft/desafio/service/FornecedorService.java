@@ -6,7 +6,7 @@ import br.com.bluesoft.desafio.model.Fornecedor;
 
 public interface FornecedorService  {
 
-    public Iterable<Fornecedor> findAll() {
+    public Iterable<Fornecedor> findAll();
 
-    }
+
 }

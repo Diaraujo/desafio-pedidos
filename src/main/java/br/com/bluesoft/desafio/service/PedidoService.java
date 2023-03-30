@@ -6,7 +6,6 @@ import br.com.bluesoft.desafio.model.Pedido;
 
 public interface PedidoService  {
 
-    public Iterable<Pedido> findAll() {
+    public Iterable<Pedido> findAll();
 
-    }
 }

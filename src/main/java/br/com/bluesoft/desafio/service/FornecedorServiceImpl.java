@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.Id;
 
 @Service
-public class PedidoServiceImpl {
+public class FornecedorServiceImpl {
 
 
 

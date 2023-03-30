@@ -2,6 +2,7 @@ package br.com.bluesoft.desafio.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.List;
 
 @Entity
 public class Fornecedor {
@@ -10,6 +11,10 @@ public class Fornecedor {
     private String id;
 
     private String nome;
+
+    private String cnpj;
+
+    private List<Preco> preco;
 
     public String getId() {
         return id;
@@ -25,5 +30,21 @@ public class Fornecedor {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
+
+    public List<Preco> getPreco() {
+        return preco;
+    }
+
+    public void setPreco(List<Preco> preco) {
+        this.preco = preco;
     }
 }
