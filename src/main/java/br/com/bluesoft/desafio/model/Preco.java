@@ -2,6 +2,7 @@ package br.com.bluesoft.desafio.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Preco {
@@ -36,4 +37,5 @@ public class Preco {
     public void setQuantidade_min(int quantidade_min) {
         this.quantidade_min = quantidade_min;
     }
+
 }

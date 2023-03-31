@@ -1,7 +1,9 @@
 package br.com.bluesoft.desafio.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.List;
 
 @Entity
@@ -14,7 +16,8 @@ public class Fornecedor {
 
     private String cnpj;
 
-    private List<Preco> preco;
+    @ManyToOne
+    private Preco preco;
 
     public String getId() {
         return id;
@@ -40,11 +43,11 @@ public class Fornecedor {
         this.cnpj = cnpj;
     }
 
-    public List<Preco> getPreco() {
+    public Preco getPreco() {
         return preco;
     }
 
-    public void setPreco(List<Preco> preco) {
+    public void setPreco(Preco preco) {
         this.preco = preco;
     }
 }
