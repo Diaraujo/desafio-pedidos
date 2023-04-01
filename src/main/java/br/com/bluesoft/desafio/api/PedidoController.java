@@ -18,7 +18,7 @@ public class PedidoController {
     private final PedidoService pedidoService;
 
     @GetMapping
-    public Iterable<Pedido> findAll(){
+    public Iterable<PedidoDto> findAll(){
         return pedidoService.findAll();
     }
 

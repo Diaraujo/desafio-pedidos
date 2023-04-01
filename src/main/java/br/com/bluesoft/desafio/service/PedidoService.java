@@ -7,7 +7,7 @@ import br.com.bluesoft.desafio.model.dto.PedidoDto;
 
 public interface PedidoService  {
 
-    Iterable<Pedido> findAll();
+    Iterable<PedidoDto> findAll();
 
     Iterable<PedidoDto> novoPedido(ListaPedidoRequestDto listaPedidoRequestDto) throws Exception;
 

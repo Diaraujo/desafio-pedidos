@@ -3,9 +3,7 @@ package br.com.bluesoft.desafio.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Setter
@@ -13,13 +11,14 @@ import javax.persistence.ManyToOne;
 public class Preco {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     private Double preco;
 
     private int quantidade_minima;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Fornecedor fornecedor;
 
     @ManyToOne

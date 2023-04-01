@@ -1,0 +1,57 @@
+{
+	"info": {
+		"_postman_id": "4e53123b-3759-4e31-96ce-40d225c499d1",
+		"name": "TESTES",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pedido Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"data\" : [\r\n        {\r\n            \"gtin\": \"7894900011517\",\r\n            \"quantidade\" : 4\r\n        },\r\n        {\r\n            \"gtin\": \"7891910000197\",\r\n            \"quantidade\" : 41\r\n        },\r\n        {\r\n            \"gtin\": \"7892840222949\",\r\n            \"quantidade\" : 88\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/pedidos/novo-pedido",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"pedidos",
+						"novo-pedido"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Pedidos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/pedidos",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"pedidos"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -8,15 +8,16 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
-@IdClass(ItemPedidoId.class)
 public class ItemPedido {
 
     @Id
-    @ManyToOne
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Produto produto;
 
-    @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Pedido pedido;
 
     private int quantidade;

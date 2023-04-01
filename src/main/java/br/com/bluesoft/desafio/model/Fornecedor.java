@@ -14,11 +14,12 @@ import java.util.List;
 @Getter
 public class Fornecedor {
 
-    private String nome;
     @Id
     private String cnpj;
 
-    @OneToMany
+    private String nome;
+
+    @OneToMany(mappedBy = "fornecedor")
     private List<Preco> precos;
 
 }

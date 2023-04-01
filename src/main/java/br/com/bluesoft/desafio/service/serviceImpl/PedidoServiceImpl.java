@@ -2,23 +2,25 @@ package br.com.bluesoft.desafio.service.serviceImpl;
 
 import br.com.bluesoft.desafio.model.*;
 import br.com.bluesoft.desafio.model.dto.*;
+import br.com.bluesoft.desafio.repository.FornecedorRepository;
+import br.com.bluesoft.desafio.repository.ItemPedidoRepository;
 import br.com.bluesoft.desafio.repository.PedidoRepository;
+import br.com.bluesoft.desafio.repository.PrecoRepository;
 import br.com.bluesoft.desafio.service.FornecedorService;
 import br.com.bluesoft.desafio.service.PedidoService;
 import br.com.bluesoft.desafio.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import javax.transaction.Transactional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PedidoServiceImpl implements PedidoService {
 
     private final PedidoRepository pedidoRepository;
@@ -27,40 +29,33 @@ public class PedidoServiceImpl implements PedidoService {
 
     private final ProdutoService produtoService;
 
-    @Override
-    public Iterable<Pedido> findAll() {
-        return pedidoRepository.findAll();
-    }
+    private final FornecedorRepository fornecedorRepository;
+
+    private final PrecoRepository precoRepository;
+
+    private final ItemPedidoRepository itemPedidoRepository;
 
     @Override
-    public Iterable<PedidoDto> novoPedido(ListaPedidoRequestDto listaPedidoRequestDto) throws Exception {
-
-        List<Preco> precoList  = gerarItemPedidoList(listaPedidoRequestDto.getData());
-
-        List<List<Preco>> grupoPrecoListByFornecedor = new ArrayList<>(precoList.stream().collect(Collectors.groupingBy(preco -> preco.getFornecedor())).values());
-
-        List<Pedido> pedidoList = gerarPedidoList(grupoPrecoListByFornecedor);
-
-        return salvarPedidos(pedidoList);
+    public Iterable<PedidoDto> findAll() {
+        return gerarResponseDto(pedidoRepository.findAll());
     }
-
-    private List<PedidoDto> salvarPedidos(List<Pedido> pedidoList){
+    private List<PedidoDto> gerarResponseDto(List<Pedido> pedidoList){
 
         List<PedidoDto> pedidoDtoList = new ArrayList<>();
 
         for(Pedido pedido : pedidoList) {
             FornecedorDto fornecedorDto = new FornecedorDto();
-            fornecedorDto.setNome(pedido.getPrecoList().get(0).getFornecedor().getNome());
+            fornecedorDto.setNome(pedido.getFornecedor().getNome());
             List<ItemPedidoDto> itemPedidoDtoList = new ArrayList<>();
 
-            for(Preco preco : pedido.getPrecoList()){
+            for(ItemPedido itemPedido : pedido.getItemPedidoList()){
                 ItemPedidoDto itemPedidoDto = new ItemPedidoDto();
                 ProdutoDto produtoDto = new ProdutoDto();
-                produtoDto.setNome(preco.getProduto().getNome());
+                produtoDto.setNome(itemPedido.getProduto().getNome());
                 itemPedidoDto.setProduto(produtoDto);
-                itemPedidoDto.setPreco(preco.getPreco());
-                itemPedidoDto.setQuantidade(5);
-                itemPedidoDto.setTotal(5*preco.getPreco());
+                itemPedidoDto.setPreco(itemPedido.getPreco());
+                itemPedidoDto.setQuantidade(itemPedido.getQuantidade());
+                itemPedidoDto.setTotal(itemPedido.getTotal());
 
                 itemPedidoDtoList.add(itemPedidoDto);
             }
@@ -78,34 +73,86 @@ public class PedidoServiceImpl implements PedidoService {
         return pedidoDtoList;
     }
 
-    private List<Pedido> gerarPedidoList(List<List<Preco>> grupoPrecoListByFornecedor) {
-        List<Pedido> pedidoList = new ArrayList<>();
 
-        for(List<Preco> precoListByFornecedor : grupoPrecoListByFornecedor){
-            Pedido pedido = new Pedido();
-            pedido.setData_pedido(new Date());
-            pedido.setPrecoList(precoListByFornecedor);
-            pedidoList.add(pedido);
+    @Override
+    public Iterable<PedidoDto> novoPedido(ListaPedidoRequestDto listaPedidoRequestDto) throws Exception {
+
+        List<Pedido> pedidoList  = gerarPedidoList(listaPedidoRequestDto.getData());
+
+        return gerarResponseDtoESalvarPedidos(pedidoList);
+    }
+
+    private void salvarPedido(Pedido pedido){
+        fornecedorRepository.save(pedido.getFornecedor());
+        precoRepository.saveAll(pedido.getFornecedor().getPrecos());
+        pedidoRepository.save(pedido);
+        itemPedidoRepository.saveAll(pedido.getItemPedidoList());
+    }
+
+    private List<PedidoDto> gerarResponseDtoESalvarPedidos(List<Pedido> pedidoList){
+
+        List<PedidoDto> pedidoDtoList = new ArrayList<>();
+
+        for(Pedido pedido : pedidoList) {
+            salvarPedido(pedido);
+            FornecedorDto fornecedorDto = new FornecedorDto();
+            fornecedorDto.setNome(pedido.getFornecedor().getNome());
+            List<ItemPedidoDto> itemPedidoDtoList = new ArrayList<>();
+
+            for(ItemPedido itemPedido : pedido.getItemPedidoList()){
+                ItemPedidoDto itemPedidoDto = new ItemPedidoDto();
+                ProdutoDto produtoDto = new ProdutoDto();
+                produtoDto.setNome(itemPedido.getProduto().getNome());
+                itemPedidoDto.setProduto(produtoDto);
+                itemPedidoDto.setPreco(itemPedido.getPreco());
+                itemPedidoDto.setQuantidade(itemPedido.getQuantidade());
+                itemPedidoDto.setTotal(itemPedido.getTotal());
+
+                itemPedidoDtoList.add(itemPedidoDto);
+            }
+
+            PedidoDto pedidoDto = new PedidoDto();
+
+            pedidoDto.setId(pedido.getId());
+            pedidoDto.setFornecedor(fornecedorDto);
+            pedidoDto.setItens(itemPedidoDtoList);
+
+            pedidoDtoList.add(pedidoDto);
         }
 
-        return pedidoList;
+
+        return pedidoDtoList;
     }
 
     private List<Pedido> gerarPedidoList(List<PedidoRequestDto> pedidoRequestDtoList) throws Exception {
         List<Pedido> pedidoList = new ArrayList<>();
+        HashMap<Fornecedor, List<ItemPedido>> fornecedorItemPedidoMap = gerarItemPedidoMap(pedidoRequestDtoList);
+
+        fornecedorItemPedidoMap.forEach(((fornecedor, itemPedidoList) -> {
+            Pedido pedido = new Pedido();
+            pedido.setData_pedido(new Date());
+            pedido.setFornecedor(fornecedor);
+            pedido.setItemPedidoList(itemPedidoList);
+            itemPedidoList.forEach(itemPedido -> itemPedido.setPedido(pedido));
+            pedidoList.add(pedido);
+        }));
+
+        return pedidoList;
+    }
+
+    private HashMap<Fornecedor, List<ItemPedido>> gerarItemPedidoMap(List<PedidoRequestDto> pedidoRequestDtoList) throws Exception {
+        HashMap<Fornecedor, List<ItemPedido>> fornecedorItemPedidoMap = new HashMap<>();
 
         for(PedidoRequestDto pedidoRequestDto : pedidoRequestDtoList){
             List<Fornecedor> fornecedorList = fornecedorService.findAllExtFornecedoresByProdutoGtin(pedidoRequestDto.getGtin());
             Preco melhorPreco = findMelhorPreco(fornecedorList, pedidoRequestDto);
 
-            Pedido pedido = ??
             List<ItemPedido> itemPedidoList = new ArrayList<>();
-            if (??){
-                pedido = new Pedido();
-                pedido.setFornecedor(melhorPreco.getFornecedor());
+
+            if (fornecedorItemPedidoMap.containsKey(melhorPreco.getFornecedor())) {
+                itemPedidoList = fornecedorItemPedidoMap.get(melhorPreco.getFornecedor());
             } else {
-                ??
-                itemPedidoList = ??
+                fornecedorItemPedidoMap.put(melhorPreco.getFornecedor(), itemPedidoList);
             }
 
             ItemPedido itemPedido = new ItemPedido();
@@ -116,7 +163,7 @@ public class PedidoServiceImpl implements PedidoService {
             itemPedidoList.add(itemPedido);
         }
 
-        return pedidoList;
+        return fornecedorItemPedidoMap;
     }
 
     private Preco findMelhorPreco(List<Fornecedor> fornecedorList, PedidoRequestDto pedidoRequestDto) throws Exception {
