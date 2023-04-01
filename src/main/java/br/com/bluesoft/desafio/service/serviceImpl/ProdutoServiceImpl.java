@@ -16,4 +16,9 @@ public class ProdutoServiceImpl implements ProdutoService {
     public Iterable<Produto> findAll() {
         return produtoRepository.findAll();
     }
+
+    @Override
+    public Produto findProdutoByGtin(String gtin) {
+        return produtoRepository.findById(gtin).orElse(new Produto());
+    }
 }

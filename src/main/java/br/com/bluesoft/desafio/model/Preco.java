@@ -18,7 +18,11 @@ public class Preco {
     private Double preco;
 
     private int quantidade_minima;
+
     @ManyToOne
     private Fornecedor fornecedor;
+
+    @ManyToOne
+    private Produto produto;
 
 }

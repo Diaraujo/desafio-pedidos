@@ -1,9 +1,12 @@
 package br.com.bluesoft.desafio.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -15,7 +18,7 @@ public class Fornecedor {
     @Id
     private String cnpj;
 
-    @ManyToOne
-    private Preco preco;
+    @OneToMany
+    private List<Preco> precos;
 
 }

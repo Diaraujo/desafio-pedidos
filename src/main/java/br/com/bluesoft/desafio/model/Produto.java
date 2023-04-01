@@ -15,5 +15,4 @@ public class Produto {
     private String gtin;
 
     private String nome;
-
 }

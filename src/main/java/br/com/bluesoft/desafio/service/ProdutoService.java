@@ -4,7 +4,9 @@ import br.com.bluesoft.desafio.model.Produto;
 
 public interface ProdutoService {
 
-    public Iterable<Produto> findAll();
+    Iterable<Produto> findAll();
+
+    Produto findProdutoByGtin(String gtin);
 
 
 }
