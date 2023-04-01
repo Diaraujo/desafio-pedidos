@@ -1,9 +1,14 @@
 package br.com.bluesoft.desafio.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
+@Setter
+@Getter
 public class Produto {
 
     @Id
@@ -11,19 +16,4 @@ public class Produto {
 
     private String nome;
 
-    public String getGtin() {
-        return gtin;
-    }
-
-    public void setGtin(String gtin) {
-        this.gtin = gtin;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
 }

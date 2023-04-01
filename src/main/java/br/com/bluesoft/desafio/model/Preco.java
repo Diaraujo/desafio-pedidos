@@ -1,10 +1,15 @@
 package br.com.bluesoft.desafio.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
+@Setter
+@Getter
 public class Preco {
 
     @Id
@@ -12,30 +17,8 @@ public class Preco {
 
     private Double preco;
 
-    private int quantidade_min;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Double getPreco() {
-        return preco;
-    }
-
-    public void setPreco(Double preco) {
-        this.preco = preco;
-    }
-
-    public int getQuantidade_min() {
-        return quantidade_min;
-    }
-
-    public void setQuantidade_min(int quantidade_min) {
-        this.quantidade_min = quantidade_min;
-    }
+    private int quantidade_minima;
+    @ManyToOne
+    private Fornecedor fornecedor;
 
 }

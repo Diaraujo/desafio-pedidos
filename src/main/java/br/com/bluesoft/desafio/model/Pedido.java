@@ -1,20 +1,24 @@
 package br.com.bluesoft.desafio.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import java.util.Date;
 
 @Entity
+@Setter
+@Getter
 public class Pedido {
 
     @Id
     private String id;
+    @ManyToOne
+    private Fornecedor fornecedor;
 
-    public String getId() {
-        return id;
-    }
+    private Date data_pedido;
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
 }
